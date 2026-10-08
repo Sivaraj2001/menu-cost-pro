@@ -14,7 +14,271 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      expenses: {
+        Row: {
+          id: string
+          key: string
+          label: string
+          monthly_amount: number
+          owner_id: string | null
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          key: string
+          label: string
+          monthly_amount?: number
+          owner_id?: string | null
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          key?: string
+          label?: string
+          monthly_amount?: number
+          owner_id?: string | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      ingredient_price_history: {
+        Row: {
+          id: string
+          ingredient_id: string
+          purchase_price: number
+          purchase_qty: number
+          purchase_unit: string
+          recorded_at: string
+          yield_pct: number
+        }
+        Insert: {
+          id?: string
+          ingredient_id: string
+          purchase_price: number
+          purchase_qty: number
+          purchase_unit: string
+          recorded_at?: string
+          yield_pct: number
+        }
+        Update: {
+          id?: string
+          ingredient_id?: string
+          purchase_price?: number
+          purchase_qty?: number
+          purchase_unit?: string
+          recorded_at?: string
+          yield_pct?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_price_history_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredients: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          owner_id: string | null
+          purchase_price: number
+          purchase_qty: number
+          purchase_unit: string
+          updated_at: string
+          yield_pct: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          name: string
+          owner_id?: string | null
+          purchase_price: number
+          purchase_qty: number
+          purchase_unit: string
+          updated_at?: string
+          yield_pct?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string | null
+          purchase_price?: number
+          purchase_qty?: number
+          purchase_unit?: string
+          updated_at?: string
+          yield_pct?: number
+        }
+        Relationships: []
+      }
+      menu_prices: {
+        Row: {
+          effective_from: string
+          id: string
+          price: number
+          recipe_id: string
+        }
+        Insert: {
+          effective_from?: string
+          id?: string
+          price: number
+          recipe_id: string
+        }
+        Update: {
+          effective_from?: string
+          id?: string
+          price?: number
+          recipe_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_prices_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pricing_settings: {
+        Row: {
+          electricity_allocated_per_recipe: boolean
+          expected_monthly_portions: number
+          expected_monthly_sales: number
+          fuel_allocated_per_recipe: boolean
+          id: number
+          overhead_method: string
+          owner_id: string | null
+          review_threshold_pct: number
+          rounding_increment: number
+          target_margin_pct: number
+          updated_at: string
+        }
+        Insert: {
+          electricity_allocated_per_recipe?: boolean
+          expected_monthly_portions?: number
+          expected_monthly_sales?: number
+          fuel_allocated_per_recipe?: boolean
+          id?: number
+          overhead_method?: string
+          owner_id?: string | null
+          review_threshold_pct?: number
+          rounding_increment?: number
+          target_margin_pct?: number
+          updated_at?: string
+        }
+        Update: {
+          electricity_allocated_per_recipe?: boolean
+          expected_monthly_portions?: number
+          expected_monthly_sales?: number
+          fuel_allocated_per_recipe?: boolean
+          id?: number
+          overhead_method?: string
+          owner_id?: string | null
+          review_threshold_pct?: number
+          rounding_increment?: number
+          target_margin_pct?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recipe_ingredients: {
+        Row: {
+          id: string
+          ingredient_id: string
+          quantity: number
+          recipe_id: string
+          sort_order: number
+          unit: string
+        }
+        Insert: {
+          id?: string
+          ingredient_id: string
+          quantity: number
+          recipe_id: string
+          sort_order?: number
+          unit: string
+        }
+        Update: {
+          id?: string
+          ingredient_id?: string
+          quantity?: number
+          recipe_id?: string
+          sort_order?: number
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_ingredients_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipes: {
+        Row: {
+          batch_portions: number
+          category: string
+          created_at: string
+          fuel_cost: number
+          id: string
+          monthly_portions: number
+          name: string
+          owner_id: string | null
+          packaging_cost: number
+          portion_note: string | null
+          selling_price: number
+          updated_at: string
+          wastage_pct: number
+        }
+        Insert: {
+          batch_portions?: number
+          category?: string
+          created_at?: string
+          fuel_cost?: number
+          id?: string
+          monthly_portions?: number
+          name: string
+          owner_id?: string | null
+          packaging_cost?: number
+          portion_note?: string | null
+          selling_price?: number
+          updated_at?: string
+          wastage_pct?: number
+        }
+        Update: {
+          batch_portions?: number
+          category?: string
+          created_at?: string
+          fuel_cost?: number
+          id?: string
+          monthly_portions?: number
+          name?: string
+          owner_id?: string | null
+          packaging_cost?: number
+          portion_note?: string | null
+          selling_price?: number
+          updated_at?: string
+          wastage_pct?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
