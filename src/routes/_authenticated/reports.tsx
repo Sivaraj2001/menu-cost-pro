@@ -47,6 +47,26 @@ function ReportsPage() {
   const topIng = [...spend.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
   const below = m.dishes.filter((d) => dishHealth(d.cost, m.settings) !== "healthy");
   const changes = m.dishes.filter((d) => d.cost.recommendedPrice !== d.cost.sellingPrice);
+  const withVolume = m.dishes.filter(d => d.recipe.monthly_portions > 0);
+  const sortedVolumes = [...withVolume].sort((a, b) => a.recipe.monthly_portions - b.recipe.monthly_portions);
+  const medianVolume = sortedVolumes.length ? sortedVolumes[Math.floor((sortedVolumes.length - 1) / 2)].recipe.monthly_portions : 0;
+  const sortedContributions = [...withVolume].sort((a, b) => a.cost.contribution - b.cost.contribution);
+  const medianContribution = sortedContributions.length ? sortedContributions[Math.floor((sortedContributions.length - 1) / 2)].cost.contribution : 0;
+  const segments = [
+    { label: "Stars", note: "High demand, high contribution", count: 0, total: 0 },
+    { label: "Workhorses", note: "High demand, lower contribution", count: 0, total: 0 },
+    { label: "Opportunities", note: "Lower demand, high contribution", count: 0, total: 0 },
+    { label: "Review", note: "Lower demand, lower contribution", count: 0, total: 0 },
+  ];
+  const engineered = withVolume.map(d => {
+    const highVolume = d.recipe.monthly_portions >= medianVolume;
+    const highContribution = d.cost.contribution >= medianContribution;
+    const segment = highVolume ? (highContribution ? 0 : 1) : (highContribution ? 2 : 3);
+    segments[segment].count++;
+    segments[segment].total += d.cost.contribution * d.recipe.monthly_portions;
+    return { ...d, segment: segments[segment].label };
+  });
+
 
   return (
     <>
@@ -65,6 +85,42 @@ function ReportsPage() {
           ['Dish', 'Category', 'Monthly portions estimate', 'Selling price INR', 'Ingredient cost INR', 'Variable cost INR', 'Allocated overhead INR', 'True cost INR', 'Contribution per portion INR', 'Net margin percent', 'Recommended price INR', 'Estimated monthly contribution INR'],
           ...m.dishes.map(({ recipe, cost }) => [recipe.name, recipe.category, recipe.monthly_portions, cost.sellingPrice, cost.ingredientCost, cost.variableCost, cost.overhead, cost.trueCost, cost.contribution, cost.netMarginPct, cost.recommendedPrice, cost.contribution * recipe.monthly_portions]),
         ])}>Export CSV</button>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold">Menu engineering</h2>
+          <p className="text-sm text-muted-foreground">Classifies dishes using the median monthly portion estimate and median contribution per portion among dishes with volume entered. These are estimates, not recorded sales.</p>
+        </div>
+        {withVolume.length === 0 ? <EmptyState title="Add monthly portions" description="Enter expected monthly portions for your recipes to unlock menu engineering." /> : (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {segments.map(s => (
+                <div key={s.label} className="rounded-xl border bg-white p-4">
+                  <div className="text-sm font-semibold">{s.label}</div>
+                  <div className="mt-1 text-2xl font-bold">{s.count} <span className="text-sm font-normal text-muted-foreground">dishes</span></div>
+                  <p className="mt-1 text-xs text-muted-foreground">{s.note}</p>
+                  <div className="mt-2 text-sm font-medium">{fmtINR0(s.total)} estimated monthly contribution</div>
+                </div>
+              ))}
+            </div>
+            <Panel title="Dish classifications" description="High and low are relative to other dishes with entered monthly portions.">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead><tr className="border-b text-muted-foreground"><th className="px-5 py-3">Dish</th><th className="px-3 py-3">Segment</th><th className="px-3 py-3 text-right">Monthly portions</th><th className="px-5 py-3 text-right">Contribution / portion</th></tr></thead>
+                  <tbody>{engineered.map(d => (
+                    <tr key={d.recipe.id} className="border-b last:border-0">
+                      <td className="px-5 py-3"><Link to="/dishes/$id" params={{ id: d.recipe.id }} className="hover:underline">{d.recipe.name}</Link></td>
+                      <td className="px-3 py-3">{d.segment}</td>
+                      <td className="px-3 py-3 text-right num">{d.recipe.monthly_portions}</td>
+                      <td className="px-5 py-3 text-right num">{fmtINR(d.cost.contribution)}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+              </div>
+            </Panel>
+          </>
+        )}
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title="Menu profitability ranking" description="Monthly contribution = (price − variable cost) × monthly portions">
