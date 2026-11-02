@@ -23,7 +23,17 @@ jobs:
           corepack enable
           corepack prepare pnpm@10.28.2 --activate
           corepack pnpm install --no-frozen-lockfile
+      - name: Check public Supabase configuration
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          test -n "$VITE_SUPABASE_URL" || { echo 'Missing repository variable VITE_SUPABASE_URL'; exit 1; }
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo 'Missing repository variable VITE_SUPABASE_PUBLISHABLE_KEY'; exit 1; }
       - name: Build static website
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: |
           corepack pnpm run build
           cp dist/index.html dist/404.html
