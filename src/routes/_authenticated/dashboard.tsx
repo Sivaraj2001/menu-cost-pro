@@ -30,7 +30,13 @@ function Dashboard() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="A live summary of what your menu costs to run and what it earns." />
+      <PageHeader title="Dashboard" description="Understand ingredient costs, menu profitability and restaurant performance." />
+      <div className="mb-6 flex flex-wrap items-center gap-1 border-b border-slate-200">
+        <Link to="/dashboard" className="border-b-2 border-blue-600 px-4 py-3 text-sm font-medium text-blue-600">Overview</Link>
+        <Link to="/ingredients" className="px-4 py-3 text-sm font-medium text-slate-500 hover:text-blue-600">Ingredients</Link>
+        <Link to="/pricing" className="px-4 py-3 text-sm font-medium text-slate-500 hover:text-blue-600">Menu profitability</Link>
+        <Link to="/reports" className="px-4 py-3 text-sm font-medium text-slate-500 hover:text-blue-600">Analytics</Link>
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <Stat label="Monthly fixed costs" value={fmtINR0(m.overhead.totalMonthly)} hint={`Overhead pool ${fmtINR0(m.overhead.pool)}`} />
         <Stat label="Ingredient cost coverage" value={fmtPct(coverage)} hint={`${pricedUsed} of ${usedIds.size} used ingredients priced`} tone={coverage >= 100 ? "success" : "warning"} />
