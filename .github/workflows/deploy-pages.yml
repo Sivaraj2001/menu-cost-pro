@@ -21,6 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           corepack enable
+          corepack prepare pnpm@10.28.2 --activate
           corepack pnpm install --no-frozen-lockfile
       - name: Build static website
         run: |
