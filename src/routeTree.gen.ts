@@ -9,100 +9,102 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ExpensesRouteImport } from './routes/expenses'
-import { Route as IngredientsRouteImport } from './routes/ingredients'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as DishesIdRouteImport } from './routes/dishes.$id'
-import { Route as RecipesIndexRouteImport } from './routes/recipes.index'
-import { Route as RecipesIdRouteImport } from './routes/recipes.$id'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
+import { Route as AuthenticatedIngredientsRouteImport } from './routes/_authenticated/ingredients'
+import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedDishesIdRouteImport } from './routes/_authenticated/dishes.$id'
+import { Route as AuthenticatedRecipesIndexRouteImport } from './routes/_authenticated/recipes.index'
+import { Route as AuthenticatedRecipesIdRouteImport } from './routes/_authenticated/recipes.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/_authenticated/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpensesRoute = ExpensesRouteImport.update({
-  id: '/expenses',
+const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
+  id: '/_authenticated/expenses',
   path: '/expenses',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IngredientsRoute = IngredientsRouteImport.update({
-  id: '/ingredients',
-  path: '/ingredients',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
+const AuthenticatedIngredientsRoute =
+  AuthenticatedIngredientsRouteImport.update({
+    id: '/_authenticated/ingredients',
+    path: '/ingredients',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
+  id: '/_authenticated/pricing',
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportsRoute = ReportsRouteImport.update({
-  id: '/reports',
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/_authenticated/reports',
   path: '/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/_authenticated/settings',
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DishesIdRoute = DishesIdRouteImport.update({
-  id: '/dishes/$id',
+const AuthenticatedDishesIdRoute = AuthenticatedDishesIdRouteImport.update({
+  id: '/_authenticated/dishes/$id',
   path: '/dishes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecipesIndexRoute = RecipesIndexRouteImport.update({
-  id: '/recipes/',
-  path: '/recipes/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RecipesIdRoute = RecipesIdRouteImport.update({
-  id: '/recipes/$id',
+const AuthenticatedRecipesIndexRoute =
+  AuthenticatedRecipesIndexRouteImport.update({
+    id: '/_authenticated/recipes/',
+    path: '/recipes/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedRecipesIdRoute = AuthenticatedRecipesIdRouteImport.update({
+  id: '/_authenticated/recipes/$id',
   path: '/recipes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/expenses': typeof ExpensesRoute
-  '/ingredients': typeof IngredientsRoute
-  '/pricing': typeof PricingRoute
-  '/reports': typeof ReportsRoute
-  '/settings': typeof SettingsRoute
-  '/dishes/$id': typeof DishesIdRoute
-  '/recipes/$id': typeof RecipesIdRoute
-  '/recipes/': typeof RecipesIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/expenses': typeof AuthenticatedExpensesRoute
+  '/ingredients': typeof AuthenticatedIngredientsRoute
+  '/pricing': typeof AuthenticatedPricingRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/dishes/$id': typeof AuthenticatedDishesIdRoute
+  '/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/recipes/': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/expenses': typeof ExpensesRoute
-  '/ingredients': typeof IngredientsRoute
-  '/pricing': typeof PricingRoute
-  '/reports': typeof ReportsRoute
-  '/settings': typeof SettingsRoute
-  '/dishes/$id': typeof DishesIdRoute
-  '/recipes/$id': typeof RecipesIdRoute
-  '/recipes': typeof RecipesIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/expenses': typeof AuthenticatedExpensesRoute
+  '/ingredients': typeof AuthenticatedIngredientsRoute
+  '/pricing': typeof AuthenticatedPricingRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/dishes/$id': typeof AuthenticatedDishesIdRoute
+  '/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/recipes': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/expenses': typeof ExpensesRoute
-  '/ingredients': typeof IngredientsRoute
-  '/pricing': typeof PricingRoute
-  '/reports': typeof ReportsRoute
-  '/settings': typeof SettingsRoute
-  '/dishes/$id': typeof DishesIdRoute
-  '/recipes/$id': typeof RecipesIdRoute
-  '/recipes/': typeof RecipesIndexRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
+  '/_authenticated/ingredients': typeof AuthenticatedIngredientsRoute
+  '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/dishes/$id': typeof AuthenticatedDishesIdRoute
+  '/_authenticated/recipes/$id': typeof AuthenticatedRecipesIdRoute
+  '/_authenticated/recipes/': typeof AuthenticatedRecipesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
+    | '/dashboard'
     | '/expenses'
     | '/ingredients'
     | '/pricing'
@@ -113,7 +115,7 @@ export interface FileRouteTypes {
     | '/recipes/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/dashboard'
     | '/expenses'
     | '/ingredients'
     | '/pricing'
@@ -124,107 +126,107 @@ export interface FileRouteTypes {
     | '/recipes'
   id:
     | '__root__'
-    | '/'
-    | '/expenses'
-    | '/ingredients'
-    | '/pricing'
-    | '/reports'
-    | '/settings'
-    | '/dishes/$id'
-    | '/recipes/$id'
-    | '/recipes/'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/expenses'
+    | '/_authenticated/ingredients'
+    | '/_authenticated/pricing'
+    | '/_authenticated/reports'
+    | '/_authenticated/settings'
+    | '/_authenticated/dishes/$id'
+    | '/_authenticated/recipes/$id'
+    | '/_authenticated/recipes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ExpensesRoute: typeof ExpensesRoute
-  IngredientsRoute: typeof IngredientsRoute
-  PricingRoute: typeof PricingRoute
-  ReportsRoute: typeof ReportsRoute
-  SettingsRoute: typeof SettingsRoute
-  DishesIdRoute: typeof DishesIdRoute
-  RecipesIdRoute: typeof RecipesIdRoute
-  RecipesIndexRoute: typeof RecipesIndexRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
+  AuthenticatedIngredientsRoute: typeof AuthenticatedIngredientsRoute
+  AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedDishesIdRoute: typeof AuthenticatedDishesIdRoute
+  AuthenticatedRecipesIdRoute: typeof AuthenticatedRecipesIdRoute
+  AuthenticatedRecipesIndexRoute: typeof AuthenticatedRecipesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expenses': {
-      id: '/expenses'
+    '/_authenticated/expenses': {
+      id: '/_authenticated/expenses'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof ExpensesRouteImport
+      preLoaderRoute: typeof AuthenticatedExpensesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ingredients': {
-      id: '/ingredients'
+    '/_authenticated/ingredients': {
+      id: '/_authenticated/ingredients'
       path: '/ingredients'
       fullPath: '/ingredients'
-      preLoaderRoute: typeof IngredientsRouteImport
+      preLoaderRoute: typeof AuthenticatedIngredientsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
+    '/_authenticated/pricing': {
+      id: '/_authenticated/pricing'
       path: '/pricing'
       fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
+      preLoaderRoute: typeof AuthenticatedPricingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reports': {
-      id: '/reports'
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
       path: '/reports'
       fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings': {
-      id: '/settings'
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dishes/$id': {
-      id: '/dishes/$id'
+    '/_authenticated/dishes/$id': {
+      id: '/_authenticated/dishes/$id'
       path: '/dishes/$id'
       fullPath: '/dishes/$id'
-      preLoaderRoute: typeof DishesIdRouteImport
+      preLoaderRoute: typeof AuthenticatedDishesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/recipes/': {
-      id: '/recipes/'
+    '/_authenticated/recipes/': {
+      id: '/_authenticated/recipes/'
       path: '/recipes'
       fullPath: '/recipes/'
-      preLoaderRoute: typeof RecipesIndexRouteImport
+      preLoaderRoute: typeof AuthenticatedRecipesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/recipes/$id': {
-      id: '/recipes/$id'
+    '/_authenticated/recipes/$id': {
+      id: '/_authenticated/recipes/$id'
       path: '/recipes/$id'
       fullPath: '/recipes/$id'
-      preLoaderRoute: typeof RecipesIdRouteImport
+      preLoaderRoute: typeof AuthenticatedRecipesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ExpensesRoute: ExpensesRoute,
-  IngredientsRoute: IngredientsRoute,
-  PricingRoute: PricingRoute,
-  ReportsRoute: ReportsRoute,
-  SettingsRoute: SettingsRoute,
-  DishesIdRoute: DishesIdRoute,
-  RecipesIdRoute: RecipesIdRoute,
-  RecipesIndexRoute: RecipesIndexRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
+  AuthenticatedIngredientsRoute: AuthenticatedIngredientsRoute,
+  AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedDishesIdRoute: AuthenticatedDishesIdRoute,
+  AuthenticatedRecipesIdRoute: AuthenticatedRecipesIdRoute,
+  AuthenticatedRecipesIndexRoute: AuthenticatedRecipesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
