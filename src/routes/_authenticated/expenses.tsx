@@ -8,7 +8,7 @@ import { Formula, NumberField, PageError, PageHeader, Panel } from "@/components
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_authenticated/expenses")({
   head: () => ({
     meta: [
       { title: "Restaurant expenses — Menu Cost Pro" },
@@ -30,7 +30,7 @@ function ExpensesPage() {
   const [portions, setPortions] = useState(String(m.settings.expected_monthly_portions));
   const [sales, setSales] = useState(String(m.settings.expected_monthly_sales));
   const n = (v: string) => Math.max(0, Number(v) || 0);
-  const draftExp = m.expenses.map((e) => ({ ...e, monthly_amount: n(vals[e.id]) }));
+  const draftExp = m.expenses.map((e) => ({ ...e, monthly_amount: n(vals[e.id] ?? "") }));
   const draftS = { ...m.settings, expected_monthly_portions: n(portions), expected_monthly_sales: n(sales) };
   const oh = computeOverhead(draftExp, draftS);
 
@@ -51,7 +51,7 @@ function ExpensesPage() {
             {m.expenses.map((e) => (
               <div key={e.id} className="space-y-1.5">
                 <Label htmlFor={e.id}>{e.label}{oh.excluded.some((x) => x.key === e.key) && <span className="ml-1 text-xs text-warning">(per recipe)</span>}</Label>
-                <NumberField id={e.id} prefix="₹" value={vals[e.id]} onChange={(v) => setVals((p) => ({ ...p, [e.id]: v }))} />
+                <NumberField id={e.id} prefix="₹" value={vals[e.id] ?? ""} onChange={(v) => setVals((p) => ({ ...p, [e.id]: v }))} />
               </div>
             ))}
           </div>

@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/recipes/$id")({
+export const Route = createFileRoute("/_authenticated/recipes/$id")({
   head: () => ({
     meta: [
       { title: "Edit recipe — Menu Cost Pro" },
@@ -176,7 +176,7 @@ function RecipeEditor({ recipe }: { recipe: Recipe | null }) {
                               onValueChange={(v) => {
                                 const ni = m.ingById.get(v)!;
                                 const cu = compatibleUnits(ni.purchase_unit);
-                                updLine(l.key, { ingredient_id: v, unit: cu.includes(l.unit) ? l.unit : cu[0] });
+                                updLine(l.key, { ingredient_id: v, unit: cu.includes(l.unit) ? l.unit : (cu[0] ?? l.unit) });
                               }}
                             >
                               <SelectTrigger><SelectValue placeholder="Choose ingredient" /></SelectTrigger>

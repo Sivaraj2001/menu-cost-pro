@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/ingredients")({
+export const Route = createFileRoute("/_authenticated/ingredients")({
   head: () => ({
     meta: [
       { title: "Ingredients — Menu Cost Pro" },
@@ -190,7 +190,7 @@ function IngredientDialog({ ingredient, onClose }: { ingredient: Ingredient | nu
           <div className="col-span-2 space-y-1.5">
             <Label htmlFor="name">Name</Label>
             <Input id="name" value={f.name} onChange={(e) => set("name")(e.target.value)} maxLength={100} />
-            {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+            {errors["name"] && <p className="text-xs text-destructive">{errors["name"]}</p>}
           </div>
           <div className="space-y-1.5">
             <Label>Category</Label>
@@ -209,17 +209,17 @@ function IngredientDialog({ ingredient, onClose }: { ingredient: Ingredient | nu
           <div className="space-y-1.5">
             <Label htmlFor="qty">Purchase quantity</Label>
             <NumberField id="qty" value={f.purchase_qty} onChange={set("purchase_qty")} suffix={f.purchase_unit} />
-            {errors.purchase_qty && <p className="text-xs text-destructive">{errors.purchase_qty}</p>}
+            {errors["purchase_qty"] && <p className="text-xs text-destructive">{errors["purchase_qty"]}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="price">Purchase price</Label>
             <NumberField id="price" value={f.purchase_price} onChange={set("purchase_price")} prefix="₹" />
-            {errors.purchase_price && <p className="text-xs text-destructive">{errors.purchase_price}</p>}
+            {errors["purchase_price"] && <p className="text-xs text-destructive">{errors["purchase_price"]}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="yield">Usable yield</Label>
             <NumberField id="yield" value={f.yield_pct} onChange={set("yield_pct")} suffix="%" />
-            {errors.yield_pct && <p className="text-xs text-destructive">{errors.yield_pct}</p>}
+            {errors["yield_pct"] && <p className="text-xs text-destructive">{errors["yield_pct"]}</p>}
           </div>
           <div className="space-y-1.5">
             <Label>Effective cost</Label>

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/recipes/")({
+export const Route = createFileRoute("/_authenticated/recipes/")({
   head: () => ({
     meta: [
       { title: "Recipes — Menu Cost Pro" },

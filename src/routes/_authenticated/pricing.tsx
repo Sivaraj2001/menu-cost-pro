@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/pricing")({
+export const Route = createFileRoute("/_authenticated/pricing")({
   head: () => ({
     meta: [
       { title: "Menu pricing — Menu Cost Pro" },

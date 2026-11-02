@@ -9,7 +9,7 @@ import { Formula, HealthBadge, NumberField, PageError, PageHeader, Panel, Stat }
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
-export const Route = createFileRoute("/dishes/$id")({
+export const Route = createFileRoute("/_authenticated/dishes/$id")({
   head: () => ({
     meta: [
       { title: "Dish cost breakdown — Menu Cost Pro" },
@@ -35,7 +35,7 @@ function DishPage() {
   const factor: Record<string, number> = {};
   recipe.recipe_ingredients.forEach((l) => (factor[l.ingredient_id] = 1 + pricePct / 100));
   const sp = sell === "" ? undefined : Number(sell);
-  const c = buildDish(recipe, m.ingById, m.overhead, m.settings, { priceFactor: factor, sellingPrice: sp });
+  const c = buildDish(recipe, m.ingById, m.overhead, m.settings, sp === undefined ? { priceFactor: factor } : { priceFactor: factor, sellingPrice: sp });
   const profit = c.recommendedPrice - c.trueCost;
   const steps = [
     { label: "Ingredients", v: c.ingredientCost, cls: "bg-chart-1" },
@@ -89,7 +89,7 @@ function DishPage() {
           <div className="space-y-6 p-5 text-sm">
             <div>
               <div className="mb-2 flex justify-between"><span>Ingredient price change</span><span className="num font-medium">{pricePct > 0 ? "+" : ""}{pricePct}%</span></div>
-              <Slider min={-30} max={50} step={1} value={[pricePct]} onValueChange={(v) => setPricePct(v[0])} />
+              <Slider min={-30} max={50} step={1} value={[pricePct]} onValueChange={(v) => setPricePct(v[0] ?? 0)} />
             </div>
             <div className="space-y-2">
               <span>Test selling price</span>

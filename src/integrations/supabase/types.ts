@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_plans: {
+        Row: {
+          initial_investment: number
+          operating_days_per_month: number
+          owner_id: string
+          target_monthly_profit: number
+          updated_at: string
+        }
+        Insert: {
+          initial_investment?: number
+          operating_days_per_month?: number
+          owner_id?: string
+          target_monthly_profit?: number
+          updated_at?: string
+        }
+        Update: {
+          initial_investment?: number
+          operating_days_per_month?: number
+          owner_id?: string
+          target_monthly_profit?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       expenses: {
         Row: {
           id: string
@@ -84,6 +108,7 @@ export type Database = {
           category: string
           created_at: string
           id: string
+          is_sample: boolean
           name: string
           owner_id: string | null
           purchase_price: number
@@ -96,6 +121,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          is_sample?: boolean
           name: string
           owner_id?: string | null
           purchase_price: number
@@ -108,6 +134,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          is_sample?: boolean
           name?: string
           owner_id?: string | null
           purchase_price?: number
@@ -238,6 +265,7 @@ export type Database = {
           created_at: string
           fuel_cost: number
           id: string
+          is_sample: boolean
           monthly_portions: number
           name: string
           owner_id: string | null
@@ -253,6 +281,7 @@ export type Database = {
           created_at?: string
           fuel_cost?: number
           id?: string
+          is_sample?: boolean
           monthly_portions?: number
           name: string
           owner_id?: string | null
@@ -268,6 +297,7 @@ export type Database = {
           created_at?: string
           fuel_cost?: number
           id?: string
+          is_sample?: boolean
           monthly_portions?: number
           name?: string
           owner_id?: string | null
@@ -284,7 +314,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      clear_sample_data: { Args: never; Returns: undefined }
+      init_workspace: { Args: never; Returns: undefined }
+      load_sample_data: { Args: never; Returns: undefined }
+      save_recipe: {
+        Args: { p_id: string; p_lines: Json; p_recipe: Json }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

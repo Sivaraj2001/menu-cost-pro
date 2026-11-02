@@ -4,7 +4,7 @@ import { dishHealth, lineCost } from "@/lib/costing";
 import { fmtINR, fmtINR0, fmtPct } from "@/lib/format";
 import { EmptyState, HealthBadge, PageError, PageHeader, Panel } from "@/components/app/ui";
 
-export const Route = createFileRoute("/reports")({
+export const Route = createFileRoute("/_authenticated/reports")({
   head: () => ({
     meta: [
       { title: "Reports — Menu Cost Pro" },

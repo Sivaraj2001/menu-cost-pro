@@ -100,7 +100,7 @@ export const expensesQuery = queryOptions({
 export const settingsQuery = queryOptions({
   queryKey: ["settings"],
   queryFn: async () => {
-    const r = await unwrap(supabase.from("pricing_settings").select("*").eq("id", 1).maybeSingle());
+    const r = await unwrap(supabase.from("pricing_settings").select("*").limit(1).maybeSingle());
     const base = r ?? {
       id: 1,
       target_margin_pct: 30,
@@ -133,7 +133,8 @@ export const priceHistoryQuery = (ingredientId: string) =>
       ),
   });
 
-export function ensureAll(qc: import("@tanstack/react-query").QueryClient) {
+export async function ensureAll(qc: import("@tanstack/react-query").QueryClient) {
+  await qc.ensureQueryData({ queryKey: ["workspace"], queryFn: async () => { await unwrap(supabase.rpc("init_workspace")); return true; }, staleTime: Infinity });
   return Promise.all([
     qc.ensureQueryData(ingredientsQuery),
     qc.ensureQueryData(recipesQuery),
@@ -191,31 +192,15 @@ export type IngredientInput = Omit<Ingredient, "id" | "updated_at">;
 export function useSaveIngredient() {
   const inv = useInvalidate();
   return useMutation({
-    mutationFn: async ({ id, values, prev }: { id?: string; values: IngredientInput; prev?: Ingredient }) => {
+    mutationFn: async ({ id, values, prev }: { id?: string | undefined; values: IngredientInput; prev?: Ingredient | undefined }) => {
       let ingId = id;
       if (id) {
         await unwrap(supabase.from("ingredients").update({ ...values, updated_at: new Date().toISOString() }).eq("id", id).select());
       } else {
         const row = await unwrap(supabase.from("ingredients").insert(values).select().single());
-        ingId = row.id;
+        ingId = row?.id;
       }
-      const priceChanged =
-        !prev ||
-        prev.purchase_price !== values.purchase_price ||
-        prev.purchase_qty !== values.purchase_qty ||
-        prev.purchase_unit !== values.purchase_unit ||
-        prev.yield_pct !== values.yield_pct;
-      if (priceChanged && ingId) {
-        await unwrap(
-          supabase.from("ingredient_price_history").insert({
-            ingredient_id: ingId,
-            purchase_unit: values.purchase_unit,
-            purchase_qty: values.purchase_qty,
-            purchase_price: values.purchase_price,
-            yield_pct: values.yield_pct,
-          }).select(),
-        );
-      }
+      void prev; void ingId;
     },
     onSuccess: () => inv("ingredients", "price_history"),
   });
@@ -240,25 +225,17 @@ export type RecipeInput = Omit<Recipe, "id" | "recipe_ingredients"> & { lines: R
 export function useSaveRecipe() {
   const inv = useInvalidate();
   return useMutation({
-    mutationFn: async ({ id, values, prevPrice }: { id?: string; values: RecipeInput; prevPrice?: number }) => {
+    mutationFn: async ({ id, values, prevPrice }: { id?: string | undefined; values: RecipeInput; prevPrice?: number | undefined }) => {
       const { lines, ...r } = values;
-      let rid = id;
-      if (id) {
-        await unwrap(supabase.from("recipes").update({ ...r, updated_at: new Date().toISOString() }).eq("id", id).select());
-        await unwrap(supabase.from("recipe_ingredients").delete().eq("recipe_id", id).select());
-      } else {
-        rid = (await unwrap(supabase.from("recipes").insert(r).select().single())).id;
-      }
-      if (lines.length)
-        await unwrap(
-          supabase
-            .from("recipe_ingredients")
-            .insert(lines.map((l, i) => ({ recipe_id: rid!, ingredient_id: l.ingredient_id, quantity: l.quantity, unit: l.unit, sort_order: i })))
-            .select(),
-        );
-      if (prevPrice === undefined || prevPrice !== r.selling_price)
-        await unwrap(supabase.from("menu_prices").insert({ recipe_id: rid!, price: r.selling_price }).select());
-      return rid!;
+      const rid = await unwrap(
+        supabase.rpc("save_recipe", {
+          p_id: (id ?? null) as string,
+          p_recipe: r as never,
+          p_lines: lines.map((l) => ({ ingredient_id: l.ingredient_id, quantity: l.quantity, unit: l.unit })) as never,
+        }),
+      );
+      void prevPrice;
+      return rid as string;
     },
     onSuccess: () => inv("recipes"),
   });
@@ -269,8 +246,7 @@ export function useUpdatePrice() {
   return useMutation({
     mutationFn: async ({ id, price }: { id: string; price: number }) => {
       await unwrap(supabase.from("recipes").update({ selling_price: price, updated_at: new Date().toISOString() }).eq("id", id).select());
-      await unwrap(supabase.from("menu_prices").insert({ recipe_id: id, price }).select());
-    },
+          },
     onSuccess: () => inv("recipes"),
   });
 }
@@ -301,7 +277,7 @@ export function useSaveSettings() {
   return useMutation({
     mutationFn: async (s: Partial<Settings>) => {
       await unwrap(
-        supabase.from("pricing_settings").upsert({ id: 1, ...s, updated_at: new Date().toISOString() }).select(),
+        supabase.from("pricing_settings").update({ ...s, updated_at: new Date().toISOString() }).not("id", "is", null).select(),
       );
     },
     onSuccess: () => inv("settings"),
