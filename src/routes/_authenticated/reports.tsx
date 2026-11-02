@@ -4,6 +4,24 @@ import { dishHealth, lineCost } from "@/lib/costing";
 import { fmtINR, fmtINR0, fmtPct } from "@/lib/format";
 import { EmptyState, HealthBadge, PageError, PageHeader, Panel } from "@/components/app/ui";
 
+function csvCell(value: string | number): string {
+  const s = String(value);
+  const safe = /^[\s]*[=+@-]/.test(s) ? "'" + s : s;
+  return '"' + safe.replace(/"/g, '""') + '"';
+}
+
+function downloadCsv(rows: (string | number)[][]) {
+  const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'menu-cost-pro-profitability.csv';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 export const Route = createFileRoute("/_authenticated/reports")({
   head: () => ({
     meta: [
@@ -24,7 +42,7 @@ function ReportsPage() {
   const spend = new Map<string, number>();
   m.recipes.forEach((r) => r.recipe_ingredients.forEach((l) => {
     const i = m.ingById.get(l.ingredient_id);
-    if (i) spend.set(i.id, (spend.get(i.id) ?? 0) + (lineCost(i, l.quantity, l.unit) / r.batch_portions) * r.monthly_portions);
+    if (i) spend.set(i.id, (spend.get(i.id) ?? 0) + (lineCost(i, l.quantity, l.unit) / Math.max(1, r.batch_portions)) * r.monthly_portions);
   }));
   const topIng = [...spend.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
   const below = m.dishes.filter((d) => dishHealth(d.cost, m.settings) !== "healthy");
@@ -32,7 +50,13 @@ function ReportsPage() {
 
   return (
     <>
-      <PageHeader title="Reports" description="Monthly figures use each dish's expected portions per month." />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PageHeader title="Reports" description="Monthly figures use each dish's expected portions per month." />
+        <button type="button" className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700" onClick={() => downloadCsv([
+          ['Dish', 'Category', 'Monthly portions estimate', 'Selling price INR', 'Ingredient cost INR', 'Variable cost INR', 'Allocated overhead INR', 'True cost INR', 'Contribution per portion INR', 'Net margin percent', 'Recommended price INR', 'Estimated monthly contribution INR'],
+          ...m.dishes.map(({ recipe, cost }) => [recipe.name, recipe.category, recipe.monthly_portions, cost.sellingPrice, cost.ingredientCost, cost.variableCost, cost.overhead, cost.trueCost, cost.contribution, cost.netMarginPct, cost.recommendedPrice, cost.contribution * recipe.monthly_portions]),
+        ])}>Export CSV</button>
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title="Menu profitability ranking" description="Monthly contribution = (price − variable cost) × monthly portions">
           <div className="divide-y text-sm">
