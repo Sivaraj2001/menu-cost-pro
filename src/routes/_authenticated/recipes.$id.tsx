@@ -176,7 +176,7 @@ function RecipeEditor({ recipe }: { recipe: Recipe | null }) {
                               onValueChange={(v) => {
                                 const ni = m.ingById.get(v)!;
                                 const cu = compatibleUnits(ni.purchase_unit);
-                                updLine(l.key, { ingredient_id: v, unit: cu.includes(l.unit) ? l.unit : cu[0] });
+                                updLine(l.key, { ingredient_id: v, unit: cu.includes(l.unit) ? l.unit : (cu[0] ?? l.unit) });
                               }}
                             >
                               <SelectTrigger><SelectValue placeholder="Choose ingredient" /></SelectTrigger>

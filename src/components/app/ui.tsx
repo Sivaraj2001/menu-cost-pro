@@ -145,10 +145,10 @@ export function NumberField({
   );
 }
 
-export function PageError({ error }: { error: Error }) {
+export function PageError({ error }: { error: unknown }) {
   return (
     <div className="rounded-lg border border-destructive/30 bg-danger-soft p-5 text-sm text-destructive">
-      Could not load data: {error.message}
+      Could not load data: {error instanceof Error ? error.message : String(error)}
     </div>
   );
 }
