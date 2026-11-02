@@ -47,6 +47,17 @@ function ReportsPage() {
   const topIng = [...spend.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
   const below = m.dishes.filter((d) => dishHealth(d.cost, m.settings) !== "healthy");
   const changes = m.dishes.filter((d) => d.cost.recommendedPrice !== d.cost.sellingPrice);
+  const projectedSales = m.dishes.reduce((sum, d) => sum + d.cost.sellingPrice * d.recipe.monthly_portions, 0);
+  const projectedVariableCost = m.dishes.reduce((sum, d) => sum + d.cost.variableCost * d.recipe.monthly_portions, 0);
+  const projectedContribution = projectedSales - projectedVariableCost;
+  const projectedNet = projectedContribution - m.overhead.pool;
+  const weightedContributionRate = projectedSales > 0 ? projectedContribution / projectedSales : 0;
+  const breakEvenSales = weightedContributionRate > 0 ? m.overhead.pool / weightedContributionRate : null;
+  const targetProfitSales = weightedContributionRate > 0 ? (m.overhead.pool + 50000) / weightedContributionRate : null;
+  const coverage = m.recipes.filter(r => r.monthly_portions > 0).length;
+  const expenseRanking = [...m.expenses].sort((a, b) => b.monthly_amount - a.monthly_amount);
+  const ingredientChanges = m.ingredients.filter(i => i.purchase_price <= 0 || i.purchase_qty <= 0 || i.yield_pct <= 0);
+
   const withVolume = m.dishes.filter(d => d.recipe.monthly_portions > 0);
   const sortedVolumes = [...withVolume].sort((a, b) => a.recipe.monthly_portions - b.recipe.monthly_portions);
   const medianVolume = sortedVolumes.length ? sortedVolumes[Math.floor((sortedVolumes.length - 1) / 2)].recipe.monthly_portions : 0;
@@ -121,6 +132,44 @@ function ReportsPage() {
             </Panel>
           </>
         )}
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold">Restaurant profit forecast</h2>
+          <p className="text-sm text-muted-foreground">Forecast from estimated dish volumes, current prices and entered expenses. Not POS sales or verified accounting profit. Monthly sales are incomplete until all dishes have volumes entered.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border bg-white p-4"><p className="text-sm text-muted-foreground">Projected revenue</p><p className="mt-1 text-xl font-bold">{fmtINR0(projectedSales)}</p></div>
+          <div className="rounded-xl border bg-white p-4"><p className="text-sm text-muted-foreground">Variable costs</p><p className="mt-1 text-xl font-bold">{fmtINR0(projectedVariableCost)}</p></div>
+          <div className="rounded-xl border bg-white p-4"><p className="text-sm text-muted-foreground">Contribution</p><p className="mt-1 text-xl font-bold">{fmtINR0(projectedContribution)}</p></div>
+          <div className="rounded-xl border bg-white p-4"><p className="text-sm text-muted-foreground">After allocated overhead</p><p className="mt-1 text-xl font-bold">{fmtINR0(projectedNet)}</p></div>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Panel title="Break-even and sales goals" description="Based on your current estimated menu sales mix.">
+            <div className="space-y-3 p-5 text-sm">
+              <div className="flex justify-between gap-3"><span>Monthly overhead pool</span><b>{fmtINR0(m.overhead.pool)}</b></div>
+              <div className="flex justify-between gap-3"><span>Weighted contribution margin</span><b>{fmtPct(weightedContributionRate * 100)}</b></div>
+              <div className="flex justify-between gap-3"><span>Break-even monthly revenue</span><b>{breakEvenSales === null ? "Unavailable" : fmtINR0(breakEvenSales)}</b></div>
+              <div className="flex justify-between gap-3"><span>Break-even daily revenue (30 days)</span><b>{breakEvenSales === null ? "Unavailable" : fmtINR0(breakEvenSales / 30)}</b></div>
+              <div className="flex justify-between gap-3"><span>Revenue for ₹50,000 monthly surplus</span><b>{targetProfitSales === null ? "Unavailable" : fmtINR0(targetProfitSales)}</b></div>
+              <p className="text-xs text-muted-foreground">Requires a positive contribution margin and complete cost inputs. Revenue target is illustrative, not a guarantee.</p>
+            </div>
+          </Panel>
+          <Panel title="Data quality checks" description="Resolve missing inputs before trusting projections.">
+            <div className="space-y-3 p-5 text-sm">
+              <div className="flex justify-between gap-3"><span>Recipes with monthly volume</span><b>{coverage} / {m.recipes.length}</b></div>
+              <div className="flex justify-between gap-3"><span>Ingredients missing valid purchase data</span><b>{ingredientChanges.length}</b></div>
+              <div className="flex justify-between gap-3"><span>Recipes without ingredient lines</span><b>{m.recipes.filter(r => r.recipe_ingredients.length === 0).length}</b></div>
+              <p className="text-xs text-muted-foreground">Zero or missing quantities can understate costs and overstate profits.</p>
+            </div>
+          </Panel>
+        </div>
+        <Panel title="Monthly expense ranking" description="Largest entered expenses first.">
+          <div className="divide-y text-sm">
+            {expenseRanking.map(e => <div key={e.id} className="flex justify-between gap-3 px-5 py-3"><span>{e.label}</span><span className="num">{fmtINR0(e.monthly_amount)}</span></div>)}
+          </div>
+        </Panel>
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title="Menu profitability ranking" description="Monthly contribution = (price − variable cost) × monthly portions">

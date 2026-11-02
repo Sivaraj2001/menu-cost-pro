@@ -25,6 +25,31 @@ export const Route = createFileRoute("/_authenticated/settings")({
 function SettingsPage() {
   const m = useModel();
   const [backingUp, setBackingUp] = useState(false);
+  const [restorePreview, setRestorePreview] = useState<{ exportedAt: string; counts: Record<string, number>; ownerMatches: boolean } | null>(null);
+  const [restoreError, setRestoreError] = useState("");
+  const inspectBackup = async (file?: File) => {
+    setRestorePreview(null);
+    setRestoreError("");
+    if (!file) return;
+    try {
+      if (file.size > 10 * 1024 * 1024) throw new Error("Backup exceeds 10 MB. Contact support before restoring large datasets.");
+      const parsed: unknown = JSON.parse(await file.text());
+      if (!parsed || typeof parsed !== "object") throw new Error("Invalid backup file.");
+      const obj = parsed as Record<string, unknown>;
+      if (obj.format !== "menu-cost-pro-backup" || obj.version !== 1) throw new Error("Unsupported backup format or version.");
+      const keys = ["ingredients", "recipes", "expenses", "settings", "ingredientPriceHistory"];
+      if (!keys.every(key => Array.isArray(obj[key]))) throw new Error("Backup is missing required data collections.");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Sign in to inspect a backup.");
+      setRestorePreview({
+        exportedAt: typeof obj.exportedAt === "string" ? obj.exportedAt : "Unknown",
+        ownerMatches: obj.ownerId === user.id,
+        counts: Object.fromEntries(keys.map(key => [key, (obj[key] as unknown[]).length])),
+      });
+    } catch (error) {
+      setRestoreError(error instanceof Error ? error.message : "Could not read backup.");
+    }
+  };
   const backup = async () => {
     setBackingUp(true);
     try {
@@ -91,6 +116,21 @@ function SettingsPage() {
               <div><Label>Electricity allocated per recipe</Label><p className="text-xs text-muted-foreground">Turn on only if you include electricity in each recipe's fuel cost.</p></div>
               <Switch checked={m.settings.electricity_allocated_per_recipe} onCheckedChange={(v) => set({ electricity_allocated_per_recipe: v })} />
             </div>
+          </div>
+        </Panel>
+      </div>
+      <div className="mt-6">
+        <Panel title="Inspect backup before restore">
+          <div className="space-y-3 p-5 text-sm">
+            <p className="text-muted-foreground">Select a Menu Cost Pro JSON backup to validate its format and preview record counts. This inspection does not write or replace any data.</p>
+            <input type="file" accept=".json,application/json" className="block w-full text-sm" onChange={e => void inspectBackup(e.target.files?.[0])} />
+            {restoreError && <p role="alert" className="text-red-600">{restoreError}</p>}
+            {restorePreview && <div className="rounded-lg border p-4">
+              <p>Exported: <b>{restorePreview.exportedAt}</b></p>
+              <p className={restorePreview.ownerMatches ? "text-green-700" : "text-amber-700"}>{restorePreview.ownerMatches ? "Backup belongs to this account." : "Warning: backup was exported from another account."}</p>
+              <ul className="mt-2 list-inside list-disc">{Object.entries(restorePreview.counts).map(([key, count]) => <li key={key}>{key}: {count} records</li>)}</ul>
+              <p className="mt-3 font-medium">Preview only — importing and overwriting records are disabled until safe restore validation is implemented.</p>
+            </div>}
           </div>
         </Panel>
       </div>
