@@ -8,7 +8,7 @@ import { Formula, NumberField, PageError, PageHeader, Panel } from "@/components
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/expenses")({
+export const Route = createFileRoute("/_authenticated/expenses")({
   head: () => ({
     meta: [
       { title: "Restaurant expenses — Menu Cost Pro" },

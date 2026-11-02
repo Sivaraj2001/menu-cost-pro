@@ -9,7 +9,7 @@ import { Formula, HealthBadge, NumberField, PageError, PageHeader, Panel, Stat }
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
-export const Route = createFileRoute("/dishes/$id")({
+export const Route = createFileRoute("/_authenticated/dishes/$id")({
   head: () => ({
     meta: [
       { title: "Dish cost breakdown — Menu Cost Pro" },

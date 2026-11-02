@@ -5,7 +5,7 @@ import { fmtINR, fmtINR0, fmtPct } from "@/lib/format";
 import { Formula, HealthBadge, PageError, PageHeader, Panel, Stat } from "@/components/app/ui";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — Menu Cost Pro" },

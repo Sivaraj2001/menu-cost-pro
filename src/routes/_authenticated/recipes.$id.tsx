@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Route = createFileRoute("/recipes/$id")({
+export const Route = createFileRoute("/_authenticated/recipes/$id")({
   head: () => ({
     meta: [
       { title: "Edit recipe — Menu Cost Pro" },
