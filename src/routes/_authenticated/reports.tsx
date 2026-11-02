@@ -52,6 +52,15 @@ function ReportsPage() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PageHeader title="Reports" description="Monthly figures use each dish's expected portions per month." />
+        <button type="button" className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" onClick={() => downloadCsv([
+          ['DEMO DATA - NOT ACTUAL RESTAURANT RESULTS'],
+          ['Dish', 'Monthly portions (sample)', 'Selling price INR (sample)', 'Variable cost INR (sample)', 'Contribution per portion INR (sample)', 'Estimated monthly contribution INR (sample)'],
+          ['Fried Parotta', 900, 60, 32, 28, 25200],
+          ['Chicken Biryani', 650, 120, 76, 44, 28600],
+          ['Mutton Biryani', 240, 260, 168, 92, 22080],
+          ['Mutton Botti', 350, 160, 104, 56, 19600],
+          ['Mutton Kaal Paaya', 420, 215, 145, 70, 29400],
+        ])}>Download sample CSV</button>
         <button type="button" className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700" onClick={() => downloadCsv([
           ['Dish', 'Category', 'Monthly portions estimate', 'Selling price INR', 'Ingredient cost INR', 'Variable cost INR', 'Allocated overhead INR', 'True cost INR', 'Contribution per portion INR', 'Net margin percent', 'Recommended price INR', 'Estimated monthly contribution INR'],
           ...m.dishes.map(({ recipe, cost }) => [recipe.name, recipe.category, recipe.monthly_portions, cost.sellingPrice, cost.ingredientCost, cost.variableCost, cost.overhead, cost.trueCost, cost.contribution, cost.netMarginPct, cost.recommendedPrice, cost.contribution * recipe.monthly_portions]),
