@@ -69,20 +69,20 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.985 0.003 250);
+  --radius: 0.75rem;
+  --background: oklch(0.982 0.003 250);
   --foreground: oklch(0.22 0.03 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.22 0.03 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.03 260);
-  --primary: oklch(0.28 0.06 262);
+  --primary: oklch(0.55 0.2 255);
   --primary-foreground: oklch(0.98 0.005 250);
-  --secondary: oklch(0.955 0.008 255);
+  --secondary: oklch(0.97 0.005 250);
   --secondary-foreground: oklch(0.28 0.06 262);
   --muted: oklch(0.96 0.006 255);
   --muted-foreground: oklch(0.5 0.025 260);
-  --accent: oklch(0.945 0.012 255);
+  --accent: oklch(0.955 0.016 255);
   --accent-foreground: oklch(0.28 0.06 262);
   --destructive: oklch(0.56 0.2 27);
   --destructive-foreground: oklch(0.98 0 0);
@@ -91,7 +91,7 @@
   --warning: oklch(0.68 0.15 70);
   --warning-soft: oklch(0.96 0.05 85);
   --danger-soft: oklch(0.95 0.035 25);
-  --border: oklch(0.91 0.01 255);
+  --border: oklch(0.915 0.007 255);
   --input: oklch(0.89 0.012 255);
   --ring: oklch(0.45 0.08 262);
   --chart-1: oklch(0.32 0.07 262);
@@ -99,13 +99,13 @@
   --chart-3: oklch(0.68 0.15 70);
   --chart-4: oklch(0.56 0.2 27);
   --chart-5: oklch(0.6 0.05 250);
-  --sidebar: oklch(0.21 0.035 262);
-  --sidebar-foreground: oklch(0.86 0.015 255);
-  --sidebar-primary: oklch(0.98 0.005 250);
-  --sidebar-primary-foreground: oklch(0.21 0.035 262);
-  --sidebar-accent: oklch(0.28 0.045 262);
-  --sidebar-accent-foreground: oklch(0.98 0.005 250);
-  --sidebar-border: oklch(0.3 0.04 262);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.43 0.02 255);
+  --sidebar-primary: oklch(0.2 0.025 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.965 0.014 255);
+  --sidebar-accent-foreground: oklch(0.25 0.035 260);
+  --sidebar-border: oklch(0.925 0.006 255);
   --sidebar-ring: oklch(0.5 0.08 262);
   --font-sans-stack: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono-stack: "IBM Plex Mono", ui-monospace, monospace;
